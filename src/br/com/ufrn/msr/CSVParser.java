@@ -15,7 +15,7 @@ public class CSVParser {
 	private static int tagsCount;
 	
 	public static void csvSeparator() {
-		String csvFile = "/Users/larissaleite/Downloads/Stack Overflow/Title_Body_Tags_Info.csv";
+		String csvFile = "/Users/larissaleite/Downloads/Stack Overflow/Title_Tags_Info_2015_NE.csv";
 		BufferedReader br = null;
 		String line = "";
 		
@@ -40,7 +40,7 @@ public class CSVParser {
 			boolean title_flag = true;
 			boolean body_flag = false;
 			
-			int id = 1;
+			int id = 48766;
 			try {
 				
 				//ignore first line
@@ -68,7 +68,7 @@ public class CSVParser {
 							date = new java.sql.Date(formatter.parse(pieces[2]).getTime());
 							views = Integer.parseInt(pieces[3]);
 							answers = Integer.parseInt(pieces[4]);
-							if (pieces.length > 5 && pieces[5] != "" && !pieces[5].isEmpty()) {
+							if (pieces.length > 5 && !pieces[5].equals("") && !pieces[5].isEmpty()) {
 								acceptedAnswer = Integer.parseInt(pieces[5]);
 							} else {
 								acceptedAnswer = -1;
@@ -88,9 +88,10 @@ public class CSVParser {
 							System.out.println(body);
 							System.out.println("-----------------------------------------------------------------");
 							
-							PostMySQLDAO.savePost(post, id);
-							
 							id++;
+							PostMySQLDAO.savePostNE(post, id);
+							
+							System.out.println("id: "+id);
 							
 							title = "";
 							body = "";
@@ -119,35 +120,6 @@ public class CSVParser {
 		
 	}
 	
-	public static void insertTags() {
-		String csvFile = "/Users/larissaleite/Downloads/StackOverflow CSV/UPPER/tags.csv";
-		BufferedReader br = null;
-		String line = "";
-
-		try {
-
-			br = new BufferedReader(new FileReader(csvFile));
-			int id = 0;
-			while ((line = br.readLine()) != null) {
-				PostMySQLDAO.saveTags(line, id);
-				id++;
-			}
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
 	public static HashMap<String, Integer> getMapTags() {
 		HashMap<String, Integer> mapTags = new HashMap<String, Integer>();
 		tagsCount = 0;
